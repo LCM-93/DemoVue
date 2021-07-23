@@ -2,26 +2,26 @@
   <div class="login_container">
     <div class="login_box">
       <!-- 头像区 -->
-        <div class="avatar_box">
-          <img src="../assets/logo.png"/>
-        </div>
+      <div class="avatar_box">
+        <img src="../assets/logo.png" />
+      </div>
 
-        <!-- 登录表单区 -->
-        <el-form label-width="0px" ref="loginFormRef" class="login_form" :model="loginFrom" :rules="fromRules">
-          <!-- 用户名 -->
-          <el-form-item prop="username">
-            <el-input placeholder="用户名" prefix-icon="iconfont icon-user" v-model="loginFrom.username" ></el-input>
-          </el-form-item>
-          <!-- 密码 -->
-            <el-form-item prop="password">
-            <el-input placeholder="密码" prefix-icon="iconfont icon-3702mima" v-model="loginFrom.password" show-password ></el-input>
-          </el-form-item>
-          <!-- 按钮区域 -->
-          <el-form-item class="btns">
-            <el-button type="primary" @click="login">登录</el-button>
-            <el-button type="info" @click="resetLoginForm">重置</el-button>
-          </el-form-item>
-        </el-form>
+      <!-- 登录表单区 -->
+      <el-form label-width="0px" ref="loginFormRef" class="login_form" :model="loginFrom" :rules="fromRules">
+        <!-- 用户名 -->
+        <el-form-item prop="username">
+          <el-input placeholder="用户名" prefix-icon="iconfont icon-user" v-model="loginFrom.username"></el-input>
+        </el-form-item>
+        <!-- 密码 -->
+        <el-form-item prop="password">
+          <el-input placeholder="密码" prefix-icon="iconfont icon-3702mima" v-model="loginFrom.password" show-password></el-input>
+        </el-form-item>
+        <!-- 按钮区域 -->
+        <el-form-item class="btns">
+          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="info" @click="resetLoginForm">重置</el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
@@ -37,11 +37,11 @@ export default {
       },
       fromRules: {
         username: [
-          {required: true, message: '请输入用户名', trigger: 'blur'}
+          { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         password: [
-          {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 3, message: '密码不能少于3位', trigger: 'blur'}
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 3, message: '密码不能少于3位', trigger: 'blur' }
         ]
       }
     }
@@ -64,7 +64,7 @@ export default {
         // 箭头函数中可以直接获取到外部this对象
         const that = this
         this.$http.post('login', this.loginFrom)
-          .then(({data: res}) => {
+          .then(({ data: res }) => {
             console.log(this)
             console.log('登录返回值：' + JSON.stringify(res))
             if (res.meta.status !== 200) return this.$message.error('登录失败！')
@@ -95,7 +95,7 @@ export default {
   height: 100%;
 }
 
-.login_box{
+.login_box {
   width: 450px;
   height: 300px;
   background-color: white;
@@ -103,11 +103,11 @@ export default {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   box-shadow: 0 0 10px #666;
 }
 
-.avatar_box{
+.avatar_box {
   height: 130px;
   width: 130px;
   border: 1px solid #eee;
@@ -116,9 +116,9 @@ export default {
   box-shadow: 0 0 6px #ddd;
   position: absolute;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   background-color: white;
-  img{
+  img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
@@ -126,7 +126,7 @@ export default {
   }
 }
 
-.login_form{
+.login_form {
   width: 100%;
   position: absolute;
   bottom: 0;
@@ -134,7 +134,7 @@ export default {
   box-sizing: border-box;
 }
 
-.btns{
+.btns {
   display: flex;
   justify-content: flex-end;
 }
