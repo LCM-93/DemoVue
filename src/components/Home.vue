@@ -11,19 +11,69 @@
     <!-- 页面主体区域 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside>Aside</el-aside>
+      <el-aside :width="isCollapse? '60px' : '200px' ">
+        <div class="toggle-button" @click="togleCollapse">|||</div>
+        <el-menu unique-opened :collapse="isCollapse" router :collapse-transition="false" background-color="#333744" text-color="#fff" active-text-color="#409FFF" :default-active="activePath">
+          <el-submenu :index="menu.id+''" v-for="menu in menuList" :key="menu.id">
+            <template slot="title">
+              <i :class="icons[menu.id]"></i>
+              <span>{{menu.authName}}</span>
+            </template>
+            <el-menu-item :index="'/'+subItem.path" v-for="subItem in menu.children" :key="subItem.id" @click="saveActivePath('/'+subItem.path)">
+              <template slot="title">
+                <i class="el-icon-menu"></i>
+                <span>{{ subItem.authName}}</span>
+              </template>
+            </el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
       <!-- 右侧内容主体 -->
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
 export default {
+  data () {
+    return {
+      menuList: [],
+      icons: {
+        '125': 'iconfont icon-user',
+        '103': 'iconfont icon-tijikongjian',
+        '101': 'iconfont icon-shangpin',
+        '102': 'iconfont icon-danju',
+        '145': 'iconfont icon-baobiao'
+      },
+      isCollapse: false,
+      activePath: ''
+    }
+  },
+  created () {
+    this.getMenus()
+    this.activePath = window.sessionStorage.getItem('activePath')
+  },
   methods: {
     logout () {
       window.sessionStorage.clear()
       this.$router.push('/Login')
+    },
+    async getMenus () {
+      const { data: res } = await this.$http.get('menus')
+      console.log(res)
+      if (res.meta.status === 200) {
+        this.menuList = res.data
+      }
+    },
+    togleCollapse () {
+      this.isCollapse = !this.isCollapse
+    },
+    saveActivePath (activePath) {
+      window.sessionStorage.setItem('activePath', activePath)
+      this.activePath = activePath
     }
   }
 }
@@ -55,10 +105,23 @@ export default {
   }
 }
 .el-aside {
-  width: 300px;
   background-color: #333744;
+
+  .el-menu {
+    border: none;
+  }
 }
 .el-main {
   background-color: #eaedf1;
+}
+.toggle-button {
+  background-color: #4a5064;
+  font-size: 10px;
+  line-height: 24px;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 0.2em;
+  // 鼠标放上去变成小手
+  cursor: pointer;
 }
 </style>
