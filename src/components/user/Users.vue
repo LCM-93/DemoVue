@@ -51,7 +51,7 @@
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="addForm.password"></el-input>
+          <el-input v-model="addForm.password" show-password></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="addForm.email"></el-input>
@@ -61,8 +61,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addUserVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addUserVisible = false">确 定</el-button>
+        <el-button @click="cancelAddUser">取 消</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -146,6 +146,25 @@ export default {
       console.log(res)
       if (res.meta.status !== 200) return this.$message.error('更新用户状态失败！')
       this.$message.success('更新用户状态成功！')
+    },
+    addUser () {
+      this.$refs.addFormRef.validate(async valid => {
+        console.log('校验结果：' + valid)
+        if (!valid) return
+        const { data: res } = await this.$http.post('users', this.addForm)
+        console.log(res)
+        this.addUserVisible = false
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加用户失败！')
+        }
+        this.$message.success('添加用户成功！')
+        this.$refs.addFormRef.resetFields()
+        this.queryUserList()
+      })
+    },
+    cancelAddUser () {
+      this.$refs.addFormRef.resetFields()
+      this.addUserVisible = false
     }
   }
 }
