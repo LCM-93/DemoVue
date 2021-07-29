@@ -43,7 +43,7 @@
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="modifyRole(scope.row.id)"></el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteRole(scope.row.id)"></el-button>
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="showSetRightDialog(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -65,6 +65,15 @@
         <el-button type="primary" @click="addModifyRole">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 添加分配权限的弹窗 -->
+    <el-dialog title="分配权限" :visible.sync="setRightDialogVisible" width="50%" @close="setRightDialogClose">
+      <el-tree :data="rightList" :props="setRightProps" ref="rightTree" show-checkbox node-key="id" default-expand-all :default-checked-keys="defaultKey"></el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRightDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="setRight">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -82,13 +91,22 @@ export default {
         roleName: [
           { required: true, message: '请输入角色名', trigger: 'blur' }
         ]
-      }
+      },
+      setRightDialogVisible: false,
+      setRightRoleId: '',
+      rightList: [],
+      setRightProps: {
+        children: 'children',
+        label: 'authName'
+      },
+      defaultKey: []
     }
   },
   created () {
     this.getRolesList()
   },
   methods: {
+    // 获取角色列表
     async getRolesList () {
       const { data: res } = await this.$http.get('roles')
       console.log(res)
@@ -97,6 +115,7 @@ export default {
       }
       this.rolesList = res.data
     },
+    // 移除角色下面的权限
     async removeRightById (role, rightId) {
       const confirmResult = await this.$confirm(
         '此操作将永久删除该权限, 是否继续?',
@@ -119,6 +138,7 @@ export default {
       }
       role.children = res.data
     },
+    // 展示添加修改角色dialog
     showAddModifyDialog (isAddMode) {
       this.isAddRoleMode = isAddMode
       if (isAddMode) {
@@ -129,9 +149,11 @@ export default {
       }
       this.addModifyRoleVisible = true
     },
+    // 监听添加修改角色dialog关闭
     addModifyRoleDialogClose () {
       this.$refs.addModifyFormRef.resetFields()
     },
+    // 添加或修改角色
     addModifyRole () {
       this.$refs.addModifyFormRef.validate(async valid => {
         console.log('校验结果：' + valid)
@@ -157,6 +179,7 @@ export default {
         this.getRolesList()
       })
     },
+    // 点击修改角色
     async modifyRole (roleId) {
       const { data: res } = await this.$http.get(`roles/${roleId}`)
       console.log(res)
@@ -166,6 +189,7 @@ export default {
       this.addModifyForm = res.data
       this.showAddModifyDialog(false)
     },
+    // 点击删除角色
     async deleteRole (roleId) {
       const confirmResult = await this.$confirm(
         '此操作将永久删除该角色, 是否继续?',
@@ -187,6 +211,47 @@ export default {
         return this.$message.error('删除角色失败！')
       }
       this.getRolesList()
+    },
+    // 监听设置权限dialog关闭
+    setRightDialogClose () {
+      this.defaultKey = []
+    },
+    // 设置权限
+    async setRight () {
+      const keys = [
+        ...this.$refs.rightTree.getCheckedKeys(),
+        ...this.$refs.rightTree.getHalfCheckedKeys()
+      ]
+      const keyStr = keys.join(',')
+      console.log(keyStr)
+      const { data: res } = await this.$http.post(`roles/${this.setRightRoleId}/rights`, { rids: keyStr })
+      if (res.meta.status !== 200) {
+        return this.$message.error('分配权限失败！')
+      }
+      this.$message.success('分配权限成功！')
+      this.setRightDialogVisible = false
+      this.getRolesList()
+    },
+    // 点击设置权限
+    async showSetRightDialog (role) {
+      this.setRightRoleId = role.id
+      const { data: res } = await this.$http.get('rights/tree')
+      console.log(res)
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取权限列表失败')
+      }
+      this.rightList = res.data
+      console.log(this.rightList)
+      this.getNodeCheckIds(role, this.defaultKey)
+      this.setRightDialogVisible = true
+    },
+    getNodeCheckIds (node, arry) {
+      if (!node.children) {
+        return arry.push(node.id)
+      }
+      node.children.forEach(item => {
+        this.getNodeCheckIds(item, arry)
+      })
     }
   }
 }
