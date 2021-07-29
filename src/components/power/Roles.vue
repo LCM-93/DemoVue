@@ -9,7 +9,7 @@
 
     <el-card>
       <el-row>
-        <el-button type="primary">添加角色</el-button>
+        <el-button type="primary" @click="addRoleVisible = true">添加角色</el-button>
       </el-row>
 
       <el-table :data="rolesList" border stripe>
@@ -47,13 +47,39 @@
         </el-table-column>
       </el-table>
     </el-card>
+
+    <!-- 添加角色的弹窗 -->
+    <el-dialog title="添加角色" :visible.sync="addRoleVisible" width="50%" @close="addRoleDialogClose">
+      <el-form :model="addRoleForm" :rules="addRoleFormRules" ref="addRoleFormRef" label-width="80px">
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="addRoleForm.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="addRoleForm.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addRoleVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addRole">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   data () {
     return {
-      rolesList: []
+      rolesList: [],
+      addRoleVisible: false,
+      addRoleForm: {
+        roleName: '',
+        roleDesc: ''
+      },
+      addRoleFormRules: {
+        roleName: [
+          { required: true, message: '请输入角色名', trigger: 'blur' }
+        ]
+      }
     }
   },
   created () {
@@ -89,6 +115,24 @@ export default {
         return this.$message.error('删除权限失败！')
       }
       role.children = res.data
+    },
+    addRoleDialogClose () {
+      this.$refs.addRoleFormRef.resetFields()
+    },
+    addRole () {
+      this.$refs.addRoleFormRef.validate(async valid => {
+        console.log('校验结果：' + valid)
+        if (!valid) return
+        const { data: res } = await this.$http.post('roles', this.addRoleForm)
+        console.log(res)
+        this.addRoleVisible = false
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加角色失败！')
+        }
+        this.$message.success('添加角色成功!')
+        this.$refs.addRoleFormRef.resetFields()
+        this.getRolesList()
+      })
     }
   }
 }
