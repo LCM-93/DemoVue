@@ -9,6 +9,7 @@ import Roles from '../components/power/Roles.vue'
 import Cate from '../components/goods/Cate.vue'
 import Params from '../components/goods/Params.vue'
 import Goods from '../components/goods/Goods.vue'
+import AddGoods from '../components/goods/Add.vue'
 
 Vue.use(Router)
 
@@ -54,6 +55,10 @@ const router = new Router({
         {
           path: '/goods',
           component: Goods
+        },
+        {
+          path: '/add_goods',
+          component: AddGoods
         }
       ]
     }
