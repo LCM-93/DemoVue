@@ -6,7 +6,8 @@ import { Button, Form, FormItem, Input, Message,
   TableColumn, Switch, Tooltip, Pagination,
   Dialog, MessageBox, Tag, Tree,
   Select, Option, Cascader, Alert,
-  Tabs, TabPane, Step, Steps} from 'element-ui'
+  Tabs, TabPane, Step, Steps,
+  CheckboxGroup, Checkbox, Upload} from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Form)
@@ -41,6 +42,9 @@ Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Step)
 Vue.use(Steps)
+Vue.use(CheckboxGroup)
+Vue.use(Checkbox)
+Vue.use(Upload)
 // 挂载全局对象
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
