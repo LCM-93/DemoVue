@@ -7,7 +7,8 @@ import { Button, Form, FormItem, Input, Message,
   Dialog, MessageBox, Tag, Tree,
   Select, Option, Cascader, Alert,
   Tabs, TabPane, Step, Steps,
-  CheckboxGroup, Checkbox, Upload} from 'element-ui'
+  CheckboxGroup, Checkbox, Upload, Timeline,
+  TimelineItem} from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Form)
@@ -45,6 +46,8 @@ Vue.use(Steps)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
 Vue.use(Upload)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 // 挂载全局对象
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
