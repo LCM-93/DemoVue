@@ -10,6 +10,7 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
+    mainJsPath: './src/main-dev.js',
     proxyTable: {},
 
     // Various Dev Server settings
@@ -51,6 +52,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
+    mainJsPath: './src/main-prod.js',
 
     /**
      * Source Maps

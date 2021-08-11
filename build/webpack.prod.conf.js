@@ -23,6 +23,15 @@ const webpackConfig = merge(baseWebpackConfig, {
       usePostCSS: true
     })
   },
+  externals: {
+    vue: 'Vue',
+    'vue-router': 'VueRouter',
+    axios: 'axios',
+    lodash: '_',
+    echarts: 'echarts',
+    nprogress: 'NProgress',
+    'vue-quill-editor': 'VueQuillEditor'
+  },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
@@ -76,7 +85,8 @@ const webpackConfig = merge(baseWebpackConfig, {
         // https://github.com/kangax/html-minifier#options-quick-reference
       },
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'dependency',
+      isProd: true  
     }),
     // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
